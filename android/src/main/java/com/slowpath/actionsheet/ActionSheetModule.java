@@ -2,7 +2,7 @@ package com.slowpath.actionsheet;
 
 import android.app.Activity;
 
-import com.facebook.react.ReactFragmentActivity;
+import com.facebook.react.ReactActivity;
 import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
@@ -23,7 +23,7 @@ public class ActionSheetModule extends ReactContextBaseJavaModule implements Act
     private static final int RESULT_CANCEL = -1;
     private static final int RESULT_ERROR = -2;
 
-    private ReactFragmentActivity activity;
+    private ReactActivity activity;
     private Callback callback;
     private ReactApplicationContext context;
 
@@ -50,11 +50,11 @@ public class ActionSheetModule extends ReactContextBaseJavaModule implements Act
     @ReactMethod
     public void showActionSheetWithOptions(ReadableMap params, Callback callback) {
         final Activity currentActivity = getCurrentActivity();
-        if (currentActivity == null || !(currentActivity instanceof ReactFragmentActivity)) {
+        if (currentActivity == null || !(currentActivity instanceof ReactActivity)) {
             this.callback.invoke(RESULT_ERROR);
             return;
         }
-        this.activity = (ReactFragmentActivity) currentActivity;
+        this.activity = (ReactActivity) currentActivity;
         this.callback = callback;
         int cancelButtonIndex = params.getInt("cancelButtonIndex");
         ReadableArray options = params.getArray("options");
