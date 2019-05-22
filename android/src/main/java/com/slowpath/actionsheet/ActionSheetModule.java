@@ -26,6 +26,7 @@ public class ActionSheetModule extends ReactContextBaseJavaModule implements Act
     private ReactActivity activity;
     private Callback callback;
     private ReactApplicationContext context;
+    private int cancelButtonIndex = -1;
 
     public ActionSheetModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -56,7 +57,7 @@ public class ActionSheetModule extends ReactContextBaseJavaModule implements Act
         }
         this.activity = (ReactActivity) currentActivity;
         this.callback = callback;
-        int cancelButtonIndex = params.getInt("cancelButtonIndex");
+        cancelButtonIndex = params.getInt("cancelButtonIndex");
         ReadableArray options = params.getArray("options");
         List<String> list = new ArrayList<>(options.size());
         String cancelButtonName = options.getString(cancelButtonIndex);
@@ -73,21 +74,25 @@ public class ActionSheetModule extends ReactContextBaseJavaModule implements Act
         ActionSheet.createBuilder(context, activity.getSupportFragmentManager())
                   .setCancelButtonTitle(cancelButtonName)
                   .setOtherButtonTitles(list.toArray(args))
-                  .setCancelableOnTouchOutside(false)
+                  .setCancelableOnTouchOutside(true)
                   .setListener(this).show();
     }
 
     @Override
     public void onOtherButtonClick(ActionSheet actionSheet, int index) {
       if (callback != null) {
-        callback.invoke(index);
+        if(index >= cancelButtonIndex) {
+          callback.invoke(index + 1);  
+        } else {
+          callback.invoke(index);
+        }
       }
     }
 
     @Override
     public void onDismiss(ActionSheet actionSheet, boolean isCancle) {
       if (callback != null && isCancle) {
-        callback.invoke(RESULT_CANCEL);
+        callback.invoke(cancelButtonIndex);
       }
     }
 
