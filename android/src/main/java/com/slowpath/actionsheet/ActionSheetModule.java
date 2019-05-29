@@ -27,6 +27,7 @@ public class ActionSheetModule extends ReactContextBaseJavaModule implements Act
     private Callback callback;
     private ReactApplicationContext context;
     private int cancelButtonIndex = -1;
+    private ActionSheet actionSheet;
 
     public ActionSheetModule(ReactApplicationContext reactContext) {
         super(reactContext);
@@ -71,11 +72,18 @@ public class ActionSheetModule extends ReactContextBaseJavaModule implements Act
 
         String[] args = new String[list.size()];
 
-        ActionSheet.createBuilder(context, activity.getSupportFragmentManager())
+        actionSheet = ActionSheet.createBuilder(context, activity.getSupportFragmentManager())
                   .setCancelButtonTitle(cancelButtonName)
                   .setOtherButtonTitles(list.toArray(args))
                   .setCancelableOnTouchOutside(true)
                   .setListener(this).show();
+    }
+
+    @ReactMethod
+    public void dismiss() {
+        if (actionSheet != null) {
+            actionSheet.dismiss();
+        }
     }
 
     @Override
